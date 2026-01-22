@@ -6,7 +6,7 @@ import Hero from './Hero';
 import Programs from './Program'; 
 import Gallery from './Gallery'; 
 import AboutUs from './Aboutus'; 
-import Admissions from './Admissions'; // <--- IMPORT ADMISSIONS
+import Admissions from './Admissions';
 import Contact from './Contact'; 
 import Footer from './Footer';    
 
@@ -37,7 +37,7 @@ export default function Main() {
         <AboutUs />
       </section>
 
-      {/* 5. Admissions Section (NEW) */}
+      {/* 5. Admissions Section */}
       <section id="admissions" className="scroll-mt-10">
         <Admissions />
       </section>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -25,20 +25,21 @@ const navItems = [
   { label: "Gallery", href: "/#gallery" },
   { label: "About Us", href: "/#about" },
   { label: "Admissions", href: "/#admissions" },
+  // Removed "Contact" from here - it's now only a button
 ];
 
 export const Mainnavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Custom Smooth Scroll Handler
-  const handleScroll = (e: React.MouseEvent<any>, href: string) => {
+  // Enhanced Smooth Scroll Handler
+  const handleScroll = useCallback((e: React.MouseEvent<any>, href: string) => {
     if (href.includes("#")) {
       const targetId = href.split("#")[1];
       const element = document.getElementById(targetId);
 
       if (element) {
         e.preventDefault();
-        const offset = 80; 
+        const offset = 80;
         const elementPosition = element.getBoundingClientRect().top + window.scrollY;
         const offsetPosition = elementPosition - offset;
 
@@ -48,11 +49,9 @@ export const Mainnavbar = () => {
         });
         
         setIsMenuOpen(false);
-      } else if (window.location.pathname !== "/") {
-        return;
       }
     }
-  };
+  }, []);
 
   return (
     <HeroUINavbar
@@ -60,12 +59,9 @@ export const Mainnavbar = () => {
       maxWidth="xl"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
-      // FIX 1: MOBILE LAYOUT
-      // - "inset-x-4": Forces 1rem margin on Left AND Right. Matches mobile width perfectly.
-      // - "md:inset-x-0 md:w-fit md:mx-auto": On desktop, reset to centered fit-content.
-      className="fixed top-4 inset-x-4 md:inset-x-0 md:w-fit md:mx-auto rounded-full bg-background/70 backdrop-blur-md border-small border-default-200/50 shadow-medium z-[50]"
+      className="fixed top-4 inset-x-4 md:inset-x-0 md:w-fit md:mx-auto rounded-full bg-background/80 backdrop-blur-lg border-small border-default-200/30 shadow-lg z-[1000]"
       classNames={{
-        wrapper: "px-4 h-12 sm:h-[var(--navbar-height)]", 
+        wrapper: "px-4 h-12 sm:h-[60px]", 
         item: [
           "flex", "relative", "h-full", "items-center",
           "data-[active=true]:after:content-['']",
@@ -79,35 +75,32 @@ export const Mainnavbar = () => {
         ],
       }}
     >
-      {/* 1. BRAND / LOGO SECTION */}
-      {/* FIX 2: min-w-0 ensures the flex container can shrink if needed */}
+      {/* BRAND / LOGO SECTION */}
       <NavbarContent className="flex-1 min-w-0" justify="start">
         <NavbarBrand as="li" className="gap-2 max-w-full">
           <NextLink
             className="flex justify-start items-center gap-2 min-w-0"
             href="/"
-            onClick={() => {
-              if (typeof window !== 'undefined' && window.location.pathname === '/') {
-                 window.scrollTo({ top: 0, behavior: 'smooth' });
-              }
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
             <Logo />
-            {/* FIX 3: Added truncate to text so it doesn't push the menu off screen on tiny phones */}
-            <p className="font-bold text-inherit text-lg tracking-tight truncate">
-              Minerva
+            <p className="font-bold text-inherit text-lg tracking-tight truncate sm:text-xl">
+              Minerva Academy
             </p>
           </NextLink>
         </NavbarBrand>
 
-        {/* DESKTOP MENU LINKS (Hidden on Mobile) */}
+        {/* DESKTOP MENU LINKS */}
         <ul className="hidden lg:flex gap-6 justify-start ml-4">
           {navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "text-sm font-medium transition-opacity hover:opacity-80 data-[active=true]:text-primary data-[active=true]:font-bold"
+                  "text-sm font-medium transition-colors hover:text-primary hover:font-semibold px-2 py-1 rounded-lg hover:bg-primary/10"
                 )}
                 href={item.href}
                 onClick={(e: any) => handleScroll(e, item.href)}
@@ -119,66 +112,65 @@ export const Mainnavbar = () => {
         </ul>
       </NavbarContent>
 
-      {/* 2. DESKTOP CONTACT BUTTON (Hidden on Mobile) */}
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden md:flex">
+      {/* DESKTOP CONTACT BUTTON (Now the only Contact element) */}
+      <NavbarContent className="lg:flex" justify="end">
+        <NavbarItem>
           <Button
             as={NextLink}
-            className="text-sm font-semibold bg-primary text-white shadow-lg rounded-full px-6"
+            className="text-sm font-semibold bg-primary text-white shadow-md hover:shadow-lg rounded-full px-6 py-2 transition-all hover:scale-105 active:scale-95"
             href="/#contact" 
             variant="flat"
             onClick={(e: any) => handleScroll(e, "/#contact")}
           >
-            Contact
+            Contact Us
           </Button>
         </NavbarItem>
       </NavbarContent>
 
-      {/* 3. MOBILE HAMBURGER MENU */}
-      {/* FIX 4: flex-none prevents the toggle from being squished */}
-      <NavbarContent className="lg:hidden flex-none pl-2" justify="end">
-        <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
+      {/* MOBILE HAMBURGER MENU */}
+      <NavbarContent className="lg:hidden flex-none" justify="end">
+        <NavbarMenuToggle 
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"} 
+          className="text-foreground"
+        />
       </NavbarContent>
 
-      {/* 4. MOBILE MENU OVERLAY */}
-      <NavbarMenu className="mt-4 rounded-3xl pt-8 pb-10 bg-background/90 backdrop-blur-xl mx-4 top-[calc(var(--navbar-height)_+_1rem)] border-small border-default-200/50 shadow-2xl flex flex-col items-center justify-center gap-6 z-[49]">
-        
-        {/* Navigation Links */}
-        {navItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
+      {/* MOBILE MENU OVERLAY */}
+      <NavbarMenu className="mt-4 rounded-3xl pt-8 pb-10 bg-background/95 backdrop-blur-xl mx-4 top-[calc(60px_+_1rem)] border border-default-200/50 shadow-2xl">
+        <div className="flex flex-col items-center justify-center gap-4">
+          {/* Navigation Links */}
+          {navItems.map((item, index) => (
+            <NavbarMenuItem key={`${item}-${index}`} className="w-full">
+              <Link
+                as={NextLink}
+                color="foreground"
+                className="w-full text-xl font-medium hover:text-primary transition-colors text-center py-3 px-4 rounded-xl hover:bg-primary/10"
+                href={item.href}
+                onClick={(e: any) => handleScroll(e, item.href)}
+              >
+                {item.label}
+              </Link>
+            </NavbarMenuItem>
+          ))}
+
+          <div className="w-16 h-[1px] bg-default-300 my-2"></div>
+
+          {/* Mobile Contact Button (Now the only Contact in mobile menu) */}
+          <NavbarMenuItem className="w-full">
+            <Button
               as={NextLink}
-              color="foreground"
-              className="w-full text-2xl font-semibold tracking-wide hover:text-primary transition-colors text-center"
-              href={item.href}
-              onPress={(e: any) => handleScroll(e, item.href)}
+              className="w-full text-lg font-semibold bg-primary text-white shadow-lg rounded-xl py-4 hover:scale-105 active:scale-95 transition-transform"
+              href="/#contact"
+              variant="shadow"
+              onClick={(e: any) => {
+                handleScroll(e, "/#contact"); 
+                setIsMenuOpen(false);
+              }}
             >
-              {item.label}
-            </Link>
+              Contact Us
+            </Button>
           </NavbarMenuItem>
-        ))}
-
-        <div className="w-12 h-[1px] bg-default-300 my-2 opacity-50"></div>
-
-        {/* Mobile Contact Button */}
-        <NavbarMenuItem>
-          <Button
-            as={NextLink}
-            className="w-[200px] text-lg font-bold bg-primary text-white shadow-lg rounded-xl py-6"
-            href="/#contact"
-            variant="shadow"
-            onPress={(e: any) => {
-              handleScroll(e, "/#contact"); 
-              setIsMenuOpen(false);
-            }}
-          >
-            Contact Us
-          </Button>
-        </NavbarMenuItem>
-        
+        </div>
       </NavbarMenu>
     </HeroUINavbar>
   );
