@@ -47,7 +47,6 @@ export const Mainnavbar = () => {
           behavior: "smooth"
         });
         
-        // Close menu immediately after clicking on mobile
         setIsMenuOpen(false);
       } else if (window.location.pathname !== "/") {
         return;
@@ -61,11 +60,14 @@ export const Mainnavbar = () => {
       maxWidth="xl"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
-      // 📱 MOBILE FIX: Changed w-[90%] to w-[95%] for mobile to give more space.
-      // Added max-w properties to ensure it doesn't look stretched on ultra-wide monitors.
-      className="fixed top-4 inset-x-0 mx-auto w-[95%] md:w-fit max-w-5xl rounded-full bg-background/70 backdrop-blur-md border-small border-default-200/50 shadow-medium z-[9999]"
+      // FIX 1: Changed width logic. 
+      // - w-[92%] ensures it doesn't touch screen edges on narrow phones.
+      // - max-w-[95vw] prevents overflow.
+      // - fixed positioning centered with inset-x-0 + mx-auto.
+      className="fixed top-4 inset-x-0 mx-auto w-[92%] max-w-[95vw] md:w-fit md:max-w-5xl rounded-full bg-background/70 backdrop-blur-md border-small border-default-200/50 shadow-medium z-[9999]"
       classNames={{
-        wrapper: "px-4 sm:px-6", // Reduced padding slightly on mobile for space
+        // FIX 2: Reduced mobile padding (px-3) to give the logo and toggle more room
+        wrapper: "px-3 sm:px-6 h-12 sm:h-[var(--navbar-height)]", 
         item: [
           "flex", "relative", "h-full", "items-center",
           "data-[active=true]:after:content-['']",
@@ -80,8 +82,9 @@ export const Mainnavbar = () => {
       }}
     >
       {/* 1. BRAND / LOGO SECTION */}
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
+      {/* FIX 3: Removed strict basis-1/5 which was squishing the logo. Used flex-1 to allow it to take available space. */}
+      <NavbarContent className="flex-1 sm:flex-none" justify="start">
+        <NavbarBrand as="li" className="gap-2 max-w-fit">
           <NextLink
             className="flex justify-start items-center gap-1"
             href="/"
@@ -92,13 +95,13 @@ export const Mainnavbar = () => {
             }}
           >
             <Logo />
-            <p className="font-bold text-inherit text-lg tracking-tight">
+            <p className="font-bold text-inherit text-lg tracking-tight truncate">
               Minerva
             </p>
           </NextLink>
         </NavbarBrand>
 
-        {/* 💻 DESKTOP MENU LINKS (Hidden on Mobile) */}
+        {/* DESKTOP MENU LINKS (Hidden on Mobile) */}
         <ul className="hidden lg:flex gap-6 justify-start ml-4">
           {navItems.map((item) => (
             <NavbarItem key={item.href}>
@@ -136,12 +139,13 @@ export const Mainnavbar = () => {
       </NavbarContent>
 
       {/* 3. MOBILE HAMBURGER MENU (Visible only on Mobile) */}
-      <NavbarContent className="lg:hidden basis-1 pl-4" justify="end">
+      {/* FIX 4: Removed basis-1 constraint. Allow it to just exist at the end. */}
+      <NavbarContent className="lg:hidden flex-none pl-2" justify="end">
         <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
       </NavbarContent>
 
-      {/* 📱 4. MOBILE MENU OVERLAY */}
-      <NavbarMenu className="mt-4 rounded-3xl pt-8 pb-10 bg-background/90 backdrop-blur-xl mx-2 sm:mx-4 top-[calc(var(--navbar-height)_+_1rem)] border-small border-default-200/50 shadow-2xl flex flex-col items-center justify-center gap-6">
+      {/* 4. MOBILE MENU OVERLAY */}
+      <NavbarMenu className="mt-4 rounded-3xl pt-8 pb-10 bg-background/90 backdrop-blur-xl mx-4 top-[calc(var(--navbar-height)_+_1rem)] border-small border-default-200/50 shadow-2xl flex flex-col items-center justify-center gap-6">
         
         {/* Navigation Links */}
         {navItems.map((item, index) => (
@@ -149,7 +153,6 @@ export const Mainnavbar = () => {
             <Link
               as={NextLink}
               color="foreground"
-              // 🎨 Increased size to text-2xl for better touch targets
               className="w-full text-2xl font-semibold tracking-wide hover:text-primary transition-colors text-center"
               href={item.href}
               onPress={(e: any) => handleScroll(e, item.href)}
@@ -159,19 +162,17 @@ export const Mainnavbar = () => {
           </NavbarMenuItem>
         ))}
 
-        {/* Separator Line for aesthetics */}
         <div className="w-12 h-[1px] bg-default-300 my-2 opacity-50"></div>
 
         {/* Mobile Contact Button */}
         <NavbarMenuItem>
           <Button
             as={NextLink}
-            // 🎨 Made button full width and larger
             className="w-[200px] text-lg font-bold bg-primary text-white shadow-lg rounded-xl py-6"
             href="/#contact"
             variant="shadow"
             onPress={(e: any) => {
-              handleScroll(e, "/#contact"); // Fixed: redirected to contact, not admissions
+              handleScroll(e, "/#contact"); 
               setIsMenuOpen(false);
             }}
           >
