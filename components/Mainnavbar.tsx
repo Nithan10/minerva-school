@@ -60,14 +60,12 @@ export const Mainnavbar = () => {
       maxWidth="xl"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
-      // FIX 1: Changed width logic. 
-      // - w-[92%] ensures it doesn't touch screen edges on narrow phones.
-      // - max-w-[95vw] prevents overflow.
-      // - fixed positioning centered with inset-x-0 + mx-auto.
-      className="fixed top-4 inset-x-0 mx-auto w-[92%] max-w-[95vw] md:w-fit md:max-w-5xl rounded-full bg-background/70 backdrop-blur-md border-small border-default-200/50 shadow-medium z-[9999]"
+      // FIX 1: MOBILE LAYOUT
+      // - "inset-x-4": Forces 1rem margin on Left AND Right. Matches mobile width perfectly.
+      // - "md:inset-x-0 md:w-fit md:mx-auto": On desktop, reset to centered fit-content.
+      className="fixed top-4 inset-x-4 md:inset-x-0 md:w-fit md:mx-auto rounded-full bg-background/70 backdrop-blur-md border-small border-default-200/50 shadow-medium z-[50]"
       classNames={{
-        // FIX 2: Reduced mobile padding (px-3) to give the logo and toggle more room
-        wrapper: "px-3 sm:px-6 h-12 sm:h-[var(--navbar-height)]", 
+        wrapper: "px-4 h-12 sm:h-[var(--navbar-height)]", 
         item: [
           "flex", "relative", "h-full", "items-center",
           "data-[active=true]:after:content-['']",
@@ -82,11 +80,11 @@ export const Mainnavbar = () => {
       }}
     >
       {/* 1. BRAND / LOGO SECTION */}
-      {/* FIX 3: Removed strict basis-1/5 which was squishing the logo. Used flex-1 to allow it to take available space. */}
-      <NavbarContent className="flex-1 sm:flex-none" justify="start">
-        <NavbarBrand as="li" className="gap-2 max-w-fit">
+      {/* FIX 2: min-w-0 ensures the flex container can shrink if needed */}
+      <NavbarContent className="flex-1 min-w-0" justify="start">
+        <NavbarBrand as="li" className="gap-2 max-w-full">
           <NextLink
-            className="flex justify-start items-center gap-1"
+            className="flex justify-start items-center gap-2 min-w-0"
             href="/"
             onClick={() => {
               if (typeof window !== 'undefined' && window.location.pathname === '/') {
@@ -95,6 +93,7 @@ export const Mainnavbar = () => {
             }}
           >
             <Logo />
+            {/* FIX 3: Added truncate to text so it doesn't push the menu off screen on tiny phones */}
             <p className="font-bold text-inherit text-lg tracking-tight truncate">
               Minerva
             </p>
@@ -138,14 +137,14 @@ export const Mainnavbar = () => {
         </NavbarItem>
       </NavbarContent>
 
-      {/* 3. MOBILE HAMBURGER MENU (Visible only on Mobile) */}
-      {/* FIX 4: Removed basis-1 constraint. Allow it to just exist at the end. */}
+      {/* 3. MOBILE HAMBURGER MENU */}
+      {/* FIX 4: flex-none prevents the toggle from being squished */}
       <NavbarContent className="lg:hidden flex-none pl-2" justify="end">
         <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
       </NavbarContent>
 
       {/* 4. MOBILE MENU OVERLAY */}
-      <NavbarMenu className="mt-4 rounded-3xl pt-8 pb-10 bg-background/90 backdrop-blur-xl mx-4 top-[calc(var(--navbar-height)_+_1rem)] border-small border-default-200/50 shadow-2xl flex flex-col items-center justify-center gap-6">
+      <NavbarMenu className="mt-4 rounded-3xl pt-8 pb-10 bg-background/90 backdrop-blur-xl mx-4 top-[calc(var(--navbar-height)_+_1rem)] border-small border-default-200/50 shadow-2xl flex flex-col items-center justify-center gap-6 z-[49]">
         
         {/* Navigation Links */}
         {navItems.map((item, index) => (
