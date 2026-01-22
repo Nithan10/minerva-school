@@ -59,9 +59,9 @@ export const Mainnavbar = () => {
       maxWidth="2xl"
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
-      className="fixed top-4 inset-x-4 md:inset-x-8 lg:inset-x-12 xl:inset-x-16 md:w-[calc(100%-4rem)] lg:w-[calc(100%-6rem)] xl:w-[calc(100%-8rem)] mx-auto rounded-full bg-background/90 backdrop-blur-xl border-small border-default-200/40 shadow-xl z-[1000]"
+      className="fixed top-0 left-0 right-0 md:top-4 md:left-4 md:right-4 lg:top-4 lg:left-8 lg:right-8 xl:top-4 xl:left-12 xl:right-12 w-full md:w-[calc(100%-2rem)] lg:w-[calc(100%-4rem)] xl:w-[calc(100%-6rem)] mx-auto rounded-none md:rounded-full bg-background/95 backdrop-blur-xl border-small border-default-200/40 shadow-xl z-[1000]"
       classNames={{
-        wrapper: "px-4 h-14 sm:h-[62px] md:px-6", 
+        wrapper: "px-4 h-16 sm:h-[68px] md:h-[62px] md:px-6", 
         item: [
           "flex", "relative", "h-full", "items-center",
           "data-[active=true]:after:content-['']",
@@ -75,8 +75,8 @@ export const Mainnavbar = () => {
         ],
       }}
     >
-      {/* LEFT SECTION: LOGO & NAV LINKS */}
-      <NavbarContent className="basis-1/5 md:basis-auto" justify="start">
+      {/* LEFT SECTION: LOGO */}
+      <NavbarContent className="basis-1/3 md:basis-1/5" justify="start">
         <NavbarBrand as="li" className="max-w-fit">
           <NextLink
             className="flex justify-start items-center gap-2"
@@ -95,7 +95,7 @@ export const Mainnavbar = () => {
       </NavbarContent>
 
       {/* CENTER SECTION: DESKTOP NAV LINKS */}
-      <NavbarContent className="hidden lg:flex basis-3/5" justify="center">
+      <NavbarContent className="hidden lg:flex basis-1/3 md:basis-3/5" justify="center">
         <ul className="flex gap-4 justify-center items-center">
           {navItems.map((item) => (
             <NavbarItem key={item.href}>
@@ -115,7 +115,7 @@ export const Mainnavbar = () => {
       </NavbarContent>
 
       {/* RIGHT SECTION: CONTACT BUTTON & MENU TOGGLE */}
-      <NavbarContent className="basis-1/5 md:basis-auto" justify="end">
+      <NavbarContent className="basis-1/3 md:basis-1/5" justify="end">
         {/* DESKTOP CONTACT BUTTON */}
         <NavbarItem className="hidden lg:flex">
           <Button
@@ -129,7 +129,7 @@ export const Mainnavbar = () => {
           </Button>
         </NavbarItem>
 
-        {/* MOBILE MENU TOGGLE */}
+        {/* MOBILE MENU TOGGLE - MUST BE INSIDE NavbarContent FOR HeroUI */}
         <NavbarItem className="lg:hidden">
           <NavbarMenuToggle 
             aria-label={isMenuOpen ? "Close menu" : "Open menu"} 
@@ -139,15 +139,15 @@ export const Mainnavbar = () => {
       </NavbarContent>
 
       {/* MOBILE MENU OVERLAY */}
-      <NavbarMenu className="mt-4 rounded-3xl pt-10 pb-12 bg-background/95 backdrop-blur-xl mx-4 top-[calc(62px_+_1rem)] border border-default-200/50 shadow-2xl">
-        <div className="flex flex-col items-center justify-center gap-4">
+      <NavbarMenu className="pt-16 pb-8 bg-background/95 backdrop-blur-xl border-t border-default-200/50 shadow-2xl">
+        <div className="flex flex-col items-center justify-center gap-3 px-4">
           {/* Mobile Navigation Links */}
           {navItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`} className="w-full max-w-xs">
+            <NavbarMenuItem key={`${item}-${index}`} className="w-full">
               <Link
                 as={NextLink}
                 color="foreground"
-                className="w-full text-lg font-medium hover:text-primary transition-all duration-200 text-center py-3.5 px-4 rounded-xl hover:bg-primary/10 active:bg-primary/20"
+                className="w-full text-base font-medium hover:text-primary transition-all duration-200 text-center py-3 px-4 rounded-xl hover:bg-primary/10 active:bg-primary/20"
                 href={item.href}
                 onClick={(e: any) => handleScroll(e, item.href)}
               >
@@ -156,13 +156,13 @@ export const Mainnavbar = () => {
             </NavbarMenuItem>
           ))}
 
-          <div className="w-20 h-[1px] bg-default-300 my-3"></div>
+          <div className="w-16 h-[1px] bg-default-300 my-2"></div>
 
           {/* Mobile Contact Button */}
-          <NavbarMenuItem className="w-full max-w-xs">
+          <NavbarMenuItem className="w-full">
             <Button
               as={NextLink}
-              className="w-full text-lg font-semibold bg-primary text-white shadow-lg rounded-xl py-4 hover:scale-105 active:scale-95 transition-all duration-200"
+              className="w-full text-base font-semibold bg-primary text-white shadow-lg rounded-xl py-3.5 hover:scale-105 active:scale-95 transition-all duration-200"
               href="/#contact"
               variant="shadow"
               onClick={(e: any) => {
