@@ -88,7 +88,7 @@ export const Mainnavbar = () => {
           >
             <Logo />
             <p className="font-bold text-inherit text-lg tracking-tight sm:text-xl">
-              Minerva Academy
+              Minerva Vidhya
             </p>
           </NextLink>
         </NavbarBrand>

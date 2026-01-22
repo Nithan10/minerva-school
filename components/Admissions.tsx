@@ -81,7 +81,7 @@ export default function AdmissionsPage() {
           >
             Start Your Journey <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
-              at Minerva Academy
+              at Minerva Vidhya
             </span>
           </motion.h1>
           
