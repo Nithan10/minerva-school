@@ -9,7 +9,7 @@ export default function HeroPrimarySchool() {
   const y = useTransform(scrollY, [0, 500], [0, 120]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     alert("Request submitted! We will contact you shortly.");
     setIsModalOpen(false);

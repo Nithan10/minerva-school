@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, TargetAndTransition } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle2, Sparkles } from "lucide-react";
 import { Button } from "@heroui/react"; 
 
@@ -66,7 +66,7 @@ export default function Programs3DCarousel() {
 
 
   // Helper to get slide positions relative to current index
-  const getSlideStyles = (index) => {
+  const getSlideStyles = (index: number): TargetAndTransition => {
     const offset = (index - currentIndex + programs.length) % programs.length;
     
     // Active Slide
@@ -78,9 +78,9 @@ export default function Programs3DCarousel() {
         x: 0,
         rotateY: 0,
         filter: "brightness(1)",
-        pointerEvents: "auto",
+        pointerEvents: "auto" as const,
         display: "flex" // Ensure flex layout is kept
-      };
+      } as TargetAndTransition;
     }
     // Next Slide (Right)
     if (offset === 1) {
@@ -91,9 +91,9 @@ export default function Programs3DCarousel() {
         x: "60%", 
         rotateY: -15, 
         filter: "brightness(0.5) blur(2px)",
-        pointerEvents: "none",
+        pointerEvents: "none" as const,
         display: "flex"
-      };
+      } as TargetAndTransition;
     }
     // Previous Slide (Left) 
     if (offset === programs.length - 1) {
@@ -104,9 +104,9 @@ export default function Programs3DCarousel() {
         x: "-60%", 
         rotateY: 15, 
         filter: "brightness(0.5) blur(2px)",
-        pointerEvents: "none",
+        pointerEvents: "none" as const,
         display: "flex"
-      };
+      } as TargetAndTransition;
     }
     // Hidden slides
     return {
@@ -116,9 +116,9 @@ export default function Programs3DCarousel() {
       x: 0,
       rotateY: 0,
       filter: "blur(10px)",
-      pointerEvents: "none",
+      pointerEvents: "none" as const,
       display: "none" // Hide completely to prevent layout issues
-    };
+    } as TargetAndTransition;
   };
 
   return (

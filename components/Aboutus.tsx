@@ -51,7 +51,7 @@ const imageVariants = {
 
 // --- Sub-Components ---
 
-const FeatureCard = ({ icon: Icon, title, description, gradient }) => (
+const FeatureCard = ({ icon: Icon, title, description, gradient }: { icon: React.ElementType; title: string; description: string; gradient: string }) => (
   <motion.div
     variants={itemVariants}
     whileHover={{ y: -8, scale: 1.02 }}
@@ -68,7 +68,7 @@ const FeatureCard = ({ icon: Icon, title, description, gradient }) => (
   </motion.div>
 );
 
-const StatCard = ({ value, label, icon: Icon }) => (
+const StatCard = ({ value, label, icon: Icon }: { value: string; label: string; icon: React.ElementType }) => (
   <motion.div
     variants={itemVariants}
     whileHover={{ scale: 1.05, y: -5 }}
