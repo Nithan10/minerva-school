@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronDown, Play, X, User, Phone, Mail, GraduationCap } from "lucide-react";
 
@@ -8,6 +8,7 @@ export default function HeroPrimarySchool() {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 120]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,26 +16,42 @@ export default function HeroPrimarySchool() {
     setIsModalOpen(false);
   };
 
+  // Ensure video plays on mobile
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log("Video autoplay prevented:", error);
+        // Fallback: try muted autoplay
+        videoRef.current!.muted = true;
+        videoRef.current!.play().catch(e => console.log("Muted autoplay also prevented:", e));
+      });
+    }
+  }, []);
+
   return (
     <section className="relative h-[100dvh] min-h-[600px] w-full flex items-center justify-center overflow-hidden text-white" id="home">
       
-      {/* Background Video with Fallback */}
+      {/* Background Video - Always visible */}
       <motion.div className="absolute inset-0 z-0 h-full w-full" style={{ y }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/30 to-blue-900/30" />
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          className="w-full h-full object-cover contrast-[1.15] saturate-[1.2] brightness-75 hidden md:block"
+          preload="metadata"
+          className="w-full h-full object-cover contrast-[1.15] saturate-[1.2] brightness-75"
+          poster="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop" // Fallback image
         >
           <source src="/background-4k.mp4" type="video/mp4" />
-          {/* Remove the missing mobile video source */}
+          {/* Add mobile-optimized video source if available */}
+          <source src="/background-mobile.mp4" type="video/mp4" />
+          {/* Fallback for browsers that don't support video */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-blue-600" />
         </video>
-        {/* Remove the missing image fallback and use gradient instead */}
-        <div className="md:hidden absolute inset-0 bg-gradient-to-br from-emerald-600 to-blue-600" />
-        <div className="absolute inset-0 bg-black/40 md:bg-black/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/40" />
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
       </motion.div>
 
       {/* Content */}
