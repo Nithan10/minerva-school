@@ -149,7 +149,7 @@ export default function Videos() {
     {
       id: 3,
       title: "Science Experiment Day",
-      type: "custom",
+      type: "youtube",
       // Custom requires a manual thumbnail",
       src: "https://www.youtube.com/watch?v=rV93gM0aEpk", // Add local path later
     },
