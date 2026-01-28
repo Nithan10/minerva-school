@@ -4,11 +4,13 @@ import React from 'react';
 import { Mainnavbar } from './Mainnavbar'; 
 import Hero from './Hero';
 import Programs from './Program'; 
-import Gallery from './Gallery'; 
+import WhyUs from './Whyus'; 
+import Gallery from './Gallery';
+import Videos from './Videos'; // <-- 1. Import Videos here
 import AboutUs from './Aboutus'; 
 import Admissions from './Admissions';
 import Contact from './Contact'; 
-import Footer from './Footer';    
+import Footer from './Footer';     
 
 export default function Main() {
   return (
@@ -27,27 +29,37 @@ export default function Main() {
         <Programs />
       </section>
 
-      {/* 3. Gallery Section */}
+      {/* 3. Why Us Section */}
+      <section id="whyus" className="scroll-mt-24">
+        <WhyUs />
+      </section>
+
+      {/* 4. Gallery Section */}
       <section id="gallery" className="scroll-mt-24">
         <Gallery />
       </section>
 
-      {/* 4. About Us Section */}
+      {/* 5. Videos Section (New) */}
+      <section id="videos" className="scroll-mt-24">
+        <Videos />
+      </section>
+
+      {/* 6. About Us Section */}
       <section id="about" className="scroll-mt-24">
         <AboutUs />
       </section>
 
-      {/* 5. Admissions Section */}
+      {/* 7. Admissions Section */}
       <section id="admissions" className="scroll-mt-10">
         <Admissions />
       </section>
 
-      {/* 6. Contact Section */}
+      {/* 8. Contact Section */}
       <section id="contact" className="scroll-mt-10">
         <Contact />
       </section>
 
-      {/* 7. Footer */}
+      {/* 9. Footer */}
       <Footer />
 
     </div>
