@@ -4,12 +4,31 @@ import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 // --- Utility for class merging ---
-function cn(...inputs) {
+function cn(...inputs: any[]) {
   return twMerge(clsx(inputs));
 }
 
+// --- Type Definitions ---
+interface CardType {
+  title: string;
+  description: string;
+  image: string;
+  icon: string;
+  accent: string;
+  glowColors: string[];
+  badge: string;
+  stats: string;
+  particles: string[];
+  gradient: string;
+}
+
+interface NeuralConnectionsProps {
+  activeIndex: number | null;
+  cards: CardType[];
+}
+
 // --- Neural Connection Lines (Animated SVG lines) ---
-const NeuralConnections = ({ activeIndex, cards }) => {
+const NeuralConnections = ({ activeIndex, cards }: NeuralConnectionsProps) => {
   const paths = [
     "M 100,100 Q 250,50 400,150",
     "M 100,250 Q 250,200 400,300",
@@ -119,7 +138,13 @@ const ParticleBackground = () => {
 };
 
 // --- Advanced Spotlight with Multiple Lights ---
-const NeuralSpotlight = ({ mouseX, mouseY, colors = ["#3B82F6", "#8B5CF6", "#06B6D4"] }) => {
+interface NeuralSpotlightProps {
+  mouseX: number;
+  mouseY: number;
+  colors?: string[];
+}
+
+const NeuralSpotlight = ({ mouseX, mouseY, colors = ["#3B82F6", "#8B5CF6", "#06B6D4"] }: NeuralSpotlightProps) => {
   return (
     <>
       <motion.div
@@ -151,8 +176,15 @@ const NeuralSpotlight = ({ mouseX, mouseY, colors = ["#3B82F6", "#8B5CF6", "#06B
 };
 
 // --- 3D Holographic Card with Depth Effect ---
-const HolographicCard = ({ children, className, glowColors, rotationIntensity = 15 }) => {
-  const ref = useRef(null);
+interface HolographicCardProps {
+  children: React.ReactNode;
+  className?: string;
+  glowColors?: string[];
+  rotationIntensity?: number;
+}
+
+const HolographicCard = ({ children, className, glowColors, rotationIntensity = 15 }: HolographicCardProps) => {
+  const ref = useRef<HTMLDivElement>(null);
   
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -171,13 +203,10 @@ const HolographicCard = ({ children, className, glowColors, rotationIntensity = 
     translateZ(${useMotionTemplate`calc(${hoverSpring} * 20)`}px)
   `;
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
     
     const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
     const mouseXRel = e.clientX - rect.left;
     const mouseYRel = e.clientY - rect.top;
     
@@ -185,6 +214,8 @@ const HolographicCard = ({ children, className, glowColors, rotationIntensity = 
     mouseY.set(mouseYRel);
     isHovering.set(1);
 
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
     const rotateY = ((e.clientX - centerX) / rect.width) * rotationIntensity;
     const rotateX = ((centerY - e.clientY) / rect.height) * rotationIntensity;
 
@@ -225,7 +256,7 @@ const HolographicCard = ({ children, className, glowColors, rotationIntensity = 
       {/* Holographic Edge Glow */}
       <div className="absolute -inset-0.5 rounded-4xl bg-gradient-to-r from-blue-400/10 via-transparent to-purple-400/10 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 z-0" />
       
-      <NeuralSpotlight mouseX={mouseX} mouseY={mouseY} colors={glowColors} />
+      <NeuralSpotlight mouseX={mouseX.get()} mouseY={mouseY.get()} colors={glowColors} />
       
       {/* Inner Content Container with 3D Depth */}
       <div 
@@ -270,52 +301,52 @@ const DNAHelix = () => {
 };
 
 // --- Main Component ---
-export default function NeuralEducationSection() {
-  const [activeIndex, setActiveIndex] = useState(null);
+export default function WhyUsSection() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const cards = [
+  const cards: CardType[] = [
     {
-      title: "Cognitive Architecture",
-      description: "Building neural pathways through structured learning experiences that optimize brain development and memory retention.",
-      image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop",
-      icon: "🧠",
-      accent: "text-blue-600",
-      glowColors: ["#3B82F6", "#06B6D4"],
-      badge: "Neuro-Optimized",
-      stats: "94% Retention",
-      particles: ["⚡", "🔬", "🎯"],
-      gradient: "from-blue-400/20 to-cyan-400/20"
+      title: "Holistic Development",
+      description: "We are committed to nurturing every aspect of a child's growth through comprehensive academic programmes that develop mind, body, and character.",
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop",
+      icon: "🌟",
+      accent: "text-emerald-600",
+      glowColors: ["#10B981", "#3B82F6"],
+      badge: "Whole Child Approach",
+      stats: "98% Satisfaction",
+      particles: ["🌱", "❤️", "✨"],
+      gradient: "from-emerald-400/20 to-blue-400/20"
     },
     {
-      title: "Synaptic Connections",
-      description: "Fostering interdisciplinary learning that creates meaningful connections between diverse fields of knowledge.",
-      image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=1000&auto=format&fit=crop",
-      icon: "🔗",
+      title: "Innovative Learning",
+      description: "We've developed a cutting-edge approach to education where students gain practical, lifelong skills through project-based and experiential learning methods.",
+      image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1000&auto=format&fit=crop",
+      icon: "💡",
       accent: "text-purple-600",
       glowColors: ["#8B5CF6", "#EC4899"],
-      badge: "Interconnected",
-      stats: "360° Learning",
-      particles: ["🌐", "🔄", "✨"],
+      badge: "Future Ready",
+      stats: "3x Engagement",
+      particles: ["🚀", "🔬", "🎨"],
       gradient: "from-purple-400/20 to-pink-400/20"
     },
     {
-      title: "Adaptive Intelligence",
-      description: "AI-enhanced personalized learning paths that evolve with each student's unique cognitive development.",
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000&auto=format&fit=crop",
-      icon: "🤖",
-      accent: "text-emerald-600",
-      glowColors: ["#10B981", "#3B82F6"],
-      badge: "AI-Enhanced",
-      stats: "Real-Time Adaptation",
-      particles: ["🚀", "💡", "🎮"],
-      gradient: "from-emerald-400/20 to-blue-400/20"
+      title: "Inquiry-Based Education",
+      description: "Students learn through curiosity-driven inquiry, making education fun, effective, and memorable through innovative, student-centered methodologies.",
+      image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1000&auto=format&fit=crop",
+      icon: "🔍",
+      accent: "text-blue-600",
+      glowColors: ["#3B82F6", "#06B6D4"],
+      badge: "Active Learning",
+      stats: "95% Retention",
+      particles: ["❓", "💭", "🎯"],
+      gradient: "from-blue-400/20 to-cyan-400/20"
     }
   ];
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         setMousePosition({
@@ -348,8 +379,8 @@ export default function NeuralEducationSection() {
       </div>
 
       {/* Floating Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-blue-400/10 blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-purple-400/10 blur-3xl animate-pulse delay-1000" />
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-blue-400/10 blur-3xl animate-pulse delay-1000" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Animated Header with DNA Helix */}
@@ -367,24 +398,24 @@ export default function NeuralEducationSection() {
             initial={{ scale: 0, rotate: -180 }}
             whileInView={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-400/10 to-purple-400/10 border border-blue-200 backdrop-blur-sm mb-8 shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-400/10 to-blue-400/10 border border-emerald-200 backdrop-blur-sm mb-8 shadow-sm"
           >
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"
+              className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500"
             />
-            <span className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent tracking-wider">
-              NEURO-EDUCATION 4.0
+            <span className="text-sm font-semibold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent tracking-wider">
+              EXCELLENCE IN EDUCATION
             </span>
           </motion.div>
           
           {/* Main Title with Gradient Text */}
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 tracking-tighter">
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-              Mind
+            <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Why
             </span>
-            <span className="text-slate-900 ml-4">Evolution</span>
+            <span className="text-slate-900 ml-4">Choose Us</span>
           </h1>
           
           {/* Animated Subtitle */}
@@ -394,8 +425,9 @@ export default function NeuralEducationSection() {
             transition={{ delay: 0.3 }}
             className="max-w-3xl mx-auto text-xl text-slate-600 leading-relaxed"
           >
-            Where cognitive science meets cutting-edge technology to create the ultimate learning experience. 
-            We don't just teach—we rewire thinking patterns for lifelong mastery.
+            Discover what sets our educational approach apart. We combine proven teaching methods 
+            with innovative technology to create an exceptional learning environment where every 
+            child can thrive and reach their full potential.
           </motion.p>
         </motion.div>
 
@@ -517,7 +549,7 @@ export default function NeuralEducationSection() {
                     {/* Interactive Stats Bar */}
                     <div className="pt-6 border-t border-slate-200">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm text-slate-500">Cognitive Score</span>
+                        <span className="text-sm text-slate-500">Parent Satisfaction</span>
                         <span className={`text-lg font-bold ${card.accent}`}>{card.stats}</span>
                       </div>
                       <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
@@ -536,15 +568,15 @@ export default function NeuralEducationSection() {
                       >
                         <div className="flex items-center gap-3">
                           <motion.div 
-                            className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 flex items-center justify-center border border-slate-200"
+                            className="w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400/20 to-blue-400/20 flex items-center justify-center border border-slate-200"
                             whileHover={{ scale: 1.1 }}
                           >
-                            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                             </svg>
                           </motion.div>
-                          <span className="text-slate-800 font-medium group-hover/cta:text-blue-600 transition-colors">
-                            Explore Neural Pathways
+                          <span className="text-slate-800 font-medium group-hover/cta:text-emerald-600 transition-colors">
+                            Learn More About Our Approach
                           </span>
                         </div>
                         
@@ -571,14 +603,14 @@ export default function NeuralEducationSection() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-20 p-8 rounded-3xl bg-gradient-to-r from-blue-400/10 via-purple-400/10 to-cyan-400/10 border border-slate-200/60 backdrop-blur-sm shadow-lg"
+          className="mt-20 p-8 rounded-3xl bg-gradient-to-r from-emerald-400/10 via-blue-400/10 to-purple-400/10 border border-slate-200/60 backdrop-blur-sm shadow-lg"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { value: "97%", label: "Neural Retention", icon: "📈" },
-              { value: "3.2x", label: "Learning Speed", icon: "⚡" },
-              { value: "360°", label: "Cognitive Coverage", icon: "🎯" },
-              { value: "24/7", label: "AI Adaptation", icon: "🤖" }
+              { value: "25+", label: "Years of Excellence", icon: "🏆" },
+              { value: "98%", label: "Parent Satisfaction", icon: "😊" },
+              { value: "1:15", label: "Student-Teacher Ratio", icon: "👨‍🏫" },
+              { value: "100%", label: "University Placement", icon: "🎓" }
             ].map((stat, index) => (
               <motion.div 
                 key={index}
@@ -586,13 +618,49 @@ export default function NeuralEducationSection() {
                 whileHover={{ scale: 1.05 }}
               >
                 <div className="text-3xl mb-2 opacity-80">{stat.icon}</div>
-                <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <div className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
                   {stat.value}
                 </div>
                 <div className="text-slate-600 text-sm mt-2">{stat.label}</div>
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* Additional Content Section */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="mt-20 text-center"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">
+            Our Commitment to Excellence
+          </h2>
+          <div className="max-w-3xl mx-auto space-y-6 text-lg text-slate-600 leading-relaxed">
+            <p>
+              At our school, we believe that education should be a transformative experience 
+              that prepares students not just for exams, but for life. Our dedicated faculty, 
+              state-of-the-art facilities, and forward-thinking curriculum create an environment 
+              where curiosity is encouraged, creativity is celebrated, and character is built.
+            </p>
+            <p>
+              We maintain a balanced approach that combines academic rigor with emotional 
+              intelligence development, ensuring our students become well-rounded individuals 
+              ready to make positive contributions to society.
+            </p>
+          </div>
+          
+          {/* Call to Action Button */}
+          <motion.div 
+            className="mt-12"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <button className="px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:from-emerald-600 hover:to-blue-600">
+              Schedule a Campus Tour
+            </button>
+          </motion.div>
         </motion.div>
       </div>
     </section>
