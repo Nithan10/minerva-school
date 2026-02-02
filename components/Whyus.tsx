@@ -20,6 +20,7 @@ interface CardType {
   stats: string;
   particles: string[];
   gradient: string;
+  color: string;
 }
 
 interface NeuralConnectionsProps {
@@ -27,77 +28,212 @@ interface NeuralConnectionsProps {
   cards: CardType[];
 }
 
-// --- Neural Connection Lines (Animated SVG lines) ---
-const NeuralConnections = ({ activeIndex, cards }: NeuralConnectionsProps) => {
-  const paths = [
-    "M 100,100 Q 250,50 400,150",
-    "M 100,250 Q 250,200 400,300",
-    "M 100,400 Q 250,350 400,450",
-    "M 400,150 Q 550,100 700,250",
-    "M 400,300 Q 550,250 700,400",
-    "M 400,450 Q 550,400 700,550"
-  ];
-
+// --- Quantum Wave Animation ---
+const QuantumWave = () => {
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      <svg className="w-full h-full" viewBox="0 0 800 650">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <svg className="w-full h-full" viewBox="0 0 1200 800">
         <defs>
-          <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#4F46E5" stopOpacity="0.15" />
-            <stop offset="50%" stopColor="#3B82F6" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#06B6D4" stopOpacity="0.15" />
+          <linearGradient id="quantumGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10B981" stopOpacity="0.1" />
+            <stop offset="25%" stopColor="#3B82F6" stopOpacity="0.2" />
+            <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.15" />
+            <stop offset="75%" stopColor="#EC4899" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="#06B6D4" stopOpacity="0.2" />
           </linearGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
+          <filter id="quantumGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="glow" />
+            <feBlend in="SourceGraphic" in2="glow" mode="screen" />
           </filter>
         </defs>
         
-        {paths.map((d, i) => (
-          <motion.path
+        {/* Quantum Wave Particles */}
+        {Array.from({ length: 40 }).map((_, i) => (
+          <motion.circle
             key={i}
-            d={d}
-            stroke="url(#neuralGradient)"
-            strokeWidth="1"
-            fill="none"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ 
-              pathLength: 1,
-              opacity: [0.2, 0.4, 0.2],
+            cx={Math.random() * 1200}
+            cy={Math.random() * 800}
+            r={Math.random() * 3 + 1}
+            fill="url(#quantumGradient)"
+            filter="url(#quantumGlow)"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{
+              scale: [0, 1, 0],
+              opacity: [0, 0.8, 0],
+              x: [0, Math.random() * 200 - 100, 0],
+              y: [0, Math.random() * 200 - 100, 0],
             }}
             transition={{
-              duration: 3,
+              duration: Math.random() * 4 + 3,
               repeat: Infinity,
-              delay: i * 0.2,
+              delay: Math.random() * 2,
               ease: "easeInOut"
             }}
           />
         ))}
         
-        {/* Animated nodes at connection points */}
-        {[100, 250, 400, 550, 700].map((x) =>
-          [100, 250, 400, 550].map((y) => (
-            <motion.circle
-              key={`${x}-${y}`}
-              cx={x}
-              cy={y}
-              r="2"
-              fill="#3B82F6"
-              fillOpacity="0.4"
-              initial={{ scale: 0 }}
+        {/* Wave Lines */}
+        {Array.from({ length: 8 }).map((_, i) => (
+          <motion.path
+            key={`wave-${i}`}
+            d={`M 0,${200 + i * 50} Q 300,${150 + i * 50} 600,${200 + i * 50} T 1200,${200 + i * 50}`}
+            stroke="url(#quantumGradient)"
+            strokeWidth="0.5"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ 
+              pathLength: 1,
+              opacity: [0.1, 0.3, 0.1],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              delay: i * 0.5,
+              ease: "linear"
+            }}
+          />
+        ))}
+      </svg>
+    </div>
+  );
+};
+
+// --- Holographic Grid Background ---
+const HolographicGrid = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-500/5 via-transparent to-blue-500/5" />
+      
+      {/* Animated Grid */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,_transparent_0%,_rgba(16,185,129,0.05)_50%,_transparent_100%)] animate-[shimmer_3s_infinite]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,_transparent_0%,_rgba(59,130,246,0.05)_50%,_transparent_100%)] animate-[shimmer_3s_infinite] [animation-delay:-1.5s]" />
+      </div>
+      
+      {/* 3D Grid Lines */}
+      <div className="absolute inset-0 perspective-1000">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <motion.div
+            key={`h-line-${i}`}
+            className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent"
+            style={{ top: `${i * 5}%` }}
+            animate={{
+              opacity: [0, 0.3, 0],
+              scaleX: [0, 1, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              delay: i * 0.1,
+            }}
+          />
+        ))}
+        
+        {Array.from({ length: 20 }).map((_, i) => (
+          <motion.div
+            key={`v-line-${i}`}
+            className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-blue-500/10 to-transparent"
+            style={{ left: `${i * 5}%` }}
+            animate={{
+              opacity: [0, 0.3, 0],
+              scaleY: [0, 1, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              delay: i * 0.1 + 2,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// --- Neural Synapse Connections ---
+const NeuralSynapses = ({ activeIndex, cards }: NeuralConnectionsProps) => {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <svg className="w-full h-full" viewBox="0 0 1200 800">
+        <defs>
+          <radialGradient id="synapseGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#10B981" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+          </radialGradient>
+          
+          <filter id="synapseFilter">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+            <feOffset in="blur" dx="0" dy="0" result="offsetBlur" />
+            <feMerge>
+              <feMergeNode in="offsetBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        
+        {/* Dynamic Connections between cards */}
+        {cards.map((_, i) => {
+          const x1 = 200 + (i * 300);
+          const x2 = 1000 - (i * 300);
+          return (
+            <motion.path
+              key={`connection-${i}`}
+              d={`M ${x1},200 Q 600,400 ${x2},600`}
+              stroke="url(#synapseGlow)"
+              strokeWidth="0.8"
+              fill="none"
+              filter="url(#synapseFilter)"
+              initial={{ pathLength: 0, opacity: 0 }}
               animate={{ 
-                scale: [0, 1, 0],
-                opacity: [0, 0.5, 0]
+                pathLength: activeIndex === i ? 1 : 0.3,
+                opacity: activeIndex === i ? 0.6 : 0.1,
               }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: (x + y) * 0.001,
-              }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
             />
+          );
+        })}
+        
+        {/* Synapse Nodes */}
+        {[200, 500, 800].map((x, i) =>
+          [200, 400, 600].map((y, j) => (
+            <motion.g key={`node-${i}-${j}`}>
+              <motion.circle
+                cx={x}
+                cy={y}
+                r="4"
+                fill="#10B981"
+                fillOpacity="0.3"
+                initial={{ scale: 0 }}
+                animate={{ 
+                  scale: [0, 1.2, 1],
+                  opacity: [0, 0.8, 0.4],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: (i + j) * 0.3,
+                }}
+              />
+              <motion.circle
+                cx={x}
+                cy={y}
+                r="8"
+                stroke="#3B82F6"
+                strokeWidth="0.5"
+                fill="none"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ 
+                  scale: [0, 1.5, 0],
+                  opacity: [0, 0.3, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: (i + j) * 0.3 + 0.5,
+                }}
+              />
+            </motion.g>
           ))
         )}
       </svg>
@@ -105,127 +241,107 @@ const NeuralConnections = ({ activeIndex, cards }: NeuralConnectionsProps) => {
   );
 };
 
-// --- Floating Particles Background ---
-const ParticleBackground = () => {
-  const particles = Array.from({ length: 50 });
-  
+// --- 3D Holographic Orb ---
+const HolographicOrb = ({ color = "#10B981" }) => {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full bg-gradient-to-r from-blue-400/10 to-purple-400/10"
-          style={{
-            width: Math.random() * 4 + 1,
-            height: Math.random() * 4 + 1,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            y: [0, Math.random() * 100 - 50, 0],
-            x: [0, Math.random() * 100 - 50, 0],
-            opacity: [0, 0.6, 0],
-          }}
-          transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-          }}
-        />
-      ))}
-    </div>
+    <motion.div
+      className="relative w-full h-full"
+      animate={{
+        rotateY: 360,
+        rotateX: 180,
+      }}
+      transition={{
+        duration: 20,
+        repeat: Infinity,
+        ease: "linear"
+      }}
+    >
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-500/20 to-blue-500/20 blur-xl" />
+      <motion.div
+        className="absolute inset-4 rounded-full border-2"
+        style={{ borderColor: `${color}30` }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{ duration: 3, repeat: Infinity }}
+      />
+      <motion.div
+        className="absolute inset-8 rounded-full border"
+        style={{ borderColor: `${color}20` }}
+        animate={{
+          rotateZ: 360,
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+      />
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-transparent via-transparent to-white/5" />
+    </motion.div>
   );
 };
 
-// --- Advanced Spotlight with Multiple Lights ---
-interface NeuralSpotlightProps {
-  mouseX: number;
-  mouseY: number;
-  colors?: string[];
-}
-
-const NeuralSpotlight = ({ mouseX, mouseY, colors = ["#3B82F6", "#8B5CF6", "#06B6D4"] }: NeuralSpotlightProps) => {
-  return (
-    <>
-      <motion.div
-        className="pointer-events-none absolute -inset-px rounded-4xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-30"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              600px circle at ${mouseX}px ${mouseY}px,
-              ${colors[0]}08,
-              transparent 80%
-            )
-          `,
-        }}
-      />
-      <motion.div
-        className="pointer-events-none absolute -inset-px rounded-4xl opacity-0 transition-opacity duration-700 group-hover:opacity-50 z-20"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              400px circle at ${mouseX}px ${mouseY}px,
-              ${colors[1]}06,
-              transparent 70%
-            )
-          `,
-        }}
-      />
-    </>
-  );
-};
-
-// --- 3D Holographic Card with Depth Effect ---
-interface HolographicCardProps {
+// --- 3D Floating Card with Advanced Effects ---
+interface AdvancedCardProps {
   children: React.ReactNode;
   className?: string;
   glowColors?: string[];
-  rotationIntensity?: number;
+  hoverIntensity?: number;
+  index?: number;
 }
 
-const HolographicCard = ({ children, className, glowColors, rotationIntensity = 15 }: HolographicCardProps) => {
+const AdvancedCard = ({ children, className, glowColors = ["#10B981", "#3B82F6"], hoverIntensity = 20, index = 0 }: AdvancedCardProps) => {
   const ref = useRef<HTMLDivElement>(null);
   
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const rotationX = useMotionValue(0);
+  const rotationY = useMotionValue(0);
   const isHovering = useMotionValue(0);
+  const floatOffset = useMotionValue(0);
 
-  const xSpring = useSpring(x, { stiffness: 200, damping: 20 });
-  const ySpring = useSpring(y, { stiffness: 200, damping: 20 });
-  const hoverSpring = useSpring(isHovering, { stiffness: 100, damping: 10 });
+  const floatSpring = useSpring(floatOffset, { stiffness: 100, damping: 10 });
+  const hoverSpring = useSpring(isHovering, { stiffness: 200, damping: 20 });
+  const rotateXSpring = useSpring(rotationX, { stiffness: 300, damping: 30 });
+  const rotateYSpring = useSpring(rotationY, { stiffness: 300, damping: 30 });
+
+  // Floating animation
+  useEffect(() => {
+    const float = () => {
+      floatOffset.set(Math.sin(Date.now() * 0.001 + index) * 10);
+      requestAnimationFrame(float);
+    };
+    const animationId = requestAnimationFrame(float);
+    return () => cancelAnimationFrame(animationId);
+  }, [index, floatOffset]);
 
   const transform = useMotionTemplate`
-    perspective(1000px)
-    rotateX(${xSpring}deg)
-    rotateY(${ySpring}deg)
-    translateZ(${useMotionTemplate`calc(${hoverSpring} * 20)`}px)
+    perspective(1200px)
+    rotateX(${rotateXSpring}deg)
+    rotateY(${rotateYSpring}deg)
+    translateZ(${useMotionTemplate`calc(${hoverSpring} * 40 + ${floatSpring})`}px)
+    scale(${useMotionTemplate`calc(1 + ${hoverSpring} * 0.05)`})
   `;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
     
     const rect = ref.current.getBoundingClientRect();
-    const mouseXRel = e.clientX - rect.left;
-    const mouseYRel = e.clientY - rect.top;
-    
-    mouseX.set(mouseXRel);
-    mouseY.set(mouseYRel);
-    isHovering.set(1);
-
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    const rotateY = ((e.clientX - centerX) / rect.width) * rotationIntensity;
-    const rotateX = ((centerY - e.clientY) / rect.height) * rotationIntensity;
+    
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+    isHovering.set(1);
 
-    x.set(rotateX);
-    y.set(rotateY);
+    const rotateY = ((e.clientX - centerX) / rect.width) * hoverIntensity;
+    const rotateX = ((centerY - e.clientY) / rect.height) * hoverIntensity;
+
+    rotationX.set(rotateX);
+    rotationY.set(rotateY);
   };
 
   const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
+    rotationX.set(0);
+    rotationY.set(0);
     isHovering.set(0);
   };
 
@@ -239,62 +355,142 @@ const HolographicCard = ({ children, className, glowColors, rotationIntensity = 
         transform,
       }}
       className={cn(
-        "group relative h-full rounded-4xl border",
-        "bg-gradient-to-br from-white/90 to-white/70",
-        "shadow-lg shadow-blue-500/5",
-        "backdrop-blur-sm",
-        "transition-all duration-500",
-        "hover:shadow-xl hover:shadow-blue-500/10",
+        "group relative h-full rounded-4xl",
+        "bg-gradient-to-br from-white/95 via-white/90 to-white/85",
+        "shadow-2xl shadow-blue-500/10",
+        "backdrop-blur-xl",
+        "border border-white/30",
+        "transition-all duration-700",
+        "hover:shadow-3xl hover:shadow-emerald-500/20",
         "before:absolute before:inset-0 before:rounded-4xl",
-        "before:bg-gradient-to-br before:from-blue-500/5 before:to-purple-500/5",
-        "before:opacity-0 before:transition-opacity before:duration-500",
-        "hover:before:opacity-100",
-        "border-slate-200/60 hover:border-blue-200/60",
+        "before:bg-gradient-to-br before:from-emerald-500/10 before:to-blue-500/10",
+        "before:opacity-0 before:transition-opacity before:duration-700",
+        "group-hover:before:opacity-100",
+        "after:absolute after:inset-0 after:rounded-4xl",
+        "after:bg-gradient-to-br after:from-white/0 after:via-white/5 after:to-white/0",
+        "after:opacity-0 after:transition-opacity after:duration-500",
+        "group-hover:after:opacity-100",
         className
       )}
     >
       {/* Holographic Edge Glow */}
-      <div className="absolute -inset-0.5 rounded-4xl bg-gradient-to-r from-blue-400/10 via-transparent to-purple-400/10 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 z-0" />
+      <div className="absolute -inset-px rounded-4xl bg-gradient-to-r from-emerald-400/20 via-blue-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-700" />
       
-      <NeuralSpotlight mouseX={mouseX.get()} mouseY={mouseY.get()} colors={glowColors} />
+      {/* Dynamic Spotlight */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-4xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: useMotionTemplate`
+            radial-gradient(
+              400px circle at ${mouseX}px ${mouseY}px,
+              ${glowColors[0]}15,
+              transparent 60%
+            )
+          `,
+        }}
+      />
       
-      {/* Inner Content Container with 3D Depth */}
+      {/* Inner Content with 3D Depth */}
       <div 
         className="relative h-full w-full rounded-4xl overflow-hidden z-10"
         style={{ 
-          transform: "translateZ(40px)",
-          background: "linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 100%)"
+          transform: "translateZ(60px)",
+          background: "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)"
         }}
       >
+        {/* Micro Particles */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-0.5 h-0.5 rounded-full bg-emerald-400/20"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                scale: [0, 1, 0],
+                opacity: [0, 0.5, 0],
+              }}
+              transition={{
+                duration: Math.random() * 2 + 1,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
+        </div>
+        
         {children}
       </div>
     </motion.div>
   );
 };
 
-// --- DNA Helix Animation for Header ---
-const DNAHelix = () => {
+// --- DNA Helix Animation with Particles ---
+const AdvancedDNAHelix = () => {
   return (
-    <div className="absolute left-1/2 top-0 -translate-x-1/2 w-48 h-48 opacity-10">
-      <svg className="w-full h-full" viewBox="0 0 100 100">
+    <div className="absolute left-1/2 top-0 -translate-x-1/2 w-64 h-64 opacity-20">
+      <svg className="w-full h-full" viewBox="0 0 200 200">
+        {/* DNA Strand 1 */}
         <motion.path
-          d="M 20,10 Q 50,20 80,10 Q 50,40 20,50 Q 50,60 80,50 Q 50,80 20,90"
+          d="M 40,20 Q 100,10 160,20 Q 100,60 40,80 Q 100,100 160,80 Q 100,140 40,160 Q 100,170 160,160"
+          stroke="#10B981"
+          strokeWidth="1"
+          fill="none"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        />
+        
+        {/* DNA Strand 2 */}
+        <motion.path
+          d="M 160,20 Q 100,10 40,20 Q 100,60 160,80 Q 100,100 40,80 Q 100,140 160,160 Q 100,170 40,160"
           stroke="#3B82F6"
-          strokeWidth="0.5"
+          strokeWidth="1"
           fill="none"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear", delay: 4 }}
         />
-        <motion.path
-          d="M 80,10 Q 50,20 20,10 Q 50,40 80,50 Q 50,60 20,50 Q 50,80 80,90"
-          stroke="#8B5CF6"
-          strokeWidth="0.5"
-          fill="none"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear", delay: 2 }}
-        />
+        
+        {/* DNA Nodes */}
+        {[20, 60, 100, 140, 180].map((y, i) => (
+          <motion.g key={i}>
+            <motion.circle
+              cx="40"
+              cy={y}
+              r="3"
+              fill="#10B981"
+              initial={{ scale: 0 }}
+              animate={{ 
+                scale: [0, 1.2, 1],
+                opacity: [0, 0.8, 0.4],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                delay: i * 0.5,
+              }}
+            />
+            <motion.circle
+              cx="160"
+              cy={y}
+              r="3"
+              fill="#3B82F6"
+              initial={{ scale: 0 }}
+              animate={{ 
+                scale: [0, 1.2, 1],
+                opacity: [0, 0.8, 0.4],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                delay: i * 0.5 + 0.2,
+              }}
+            />
+          </motion.g>
+        ))}
       </svg>
     </div>
   );
@@ -303,185 +499,253 @@ const DNAHelix = () => {
 // --- Main Component ---
 export default function WhyUsSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const cards: CardType[] = [
     {
       title: "Holistic Development",
-      description: "We are committed to nurturing every aspect of a child's growth through comprehensive academic programmes that develop mind, body, and character.",
+      description: "We nurture every aspect of a child's growth through comprehensive academic programmes that develop mind, body, and character in perfect harmony.",
       image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop",
-      icon: "🌟",
+      icon: "🧬",
       accent: "text-emerald-600",
       glowColors: ["#10B981", "#3B82F6"],
       badge: "Whole Child Approach",
       stats: "98% Satisfaction",
-      particles: ["🌱", "❤️", "✨"],
-      gradient: "from-emerald-400/20 to-blue-400/20"
+      particles: ["🧠", "❤️", "🌟"],
+      gradient: "from-emerald-500/30 via-blue-500/20 to-purple-500/10",
+      color: "#10B981"
     },
     {
       title: "Innovative Learning",
-      description: "We've developed a cutting-edge approach to education where students gain practical, lifelong skills through project-based and experiential learning methods.",
+      description: "Our cutting-edge approach empowers students with practical, lifelong skills through immersive project-based and experiential learning methodologies.",
       image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1000&auto=format&fit=crop",
-      icon: "💡",
+      icon: "⚡",
       accent: "text-purple-600",
       glowColors: ["#8B5CF6", "#EC4899"],
       badge: "Future Ready",
       stats: "3x Engagement",
-      particles: ["🚀", "🔬", "🎨"],
-      gradient: "from-purple-400/20 to-pink-400/20"
+      particles: ["🚀", "💡", "🎯"],
+      gradient: "from-purple-500/30 via-pink-500/20 to-rose-500/10",
+      color: "#8B5CF6"
     },
     {
       title: "Inquiry-Based Education",
-      description: "Students learn through curiosity-driven inquiry, making education fun, effective, and memorable through innovative, student-centered methodologies.",
+      description: "Students thrive through curiosity-driven inquiry, making education engaging, effective, and memorable with innovative student-centered methodologies.",
       image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1000&auto=format&fit=crop",
-      icon: "🔍",
+      icon: "🔭",
       accent: "text-blue-600",
       glowColors: ["#3B82F6", "#06B6D4"],
       badge: "Active Learning",
       stats: "95% Retention",
-      particles: ["❓", "💭", "🎯"],
-      gradient: "from-blue-400/20 to-cyan-400/20"
+      particles: ["🔍", "💭", "✨"],
+      gradient: "from-blue-500/30 via-cyan-500/20 to-emerald-500/10",
+      color: "#3B82F6"
     }
   ];
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        });
-      }
-    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   return (
     <section 
       ref={containerRef}
-      className="relative w-full min-h-screen py-32 overflow-hidden bg-gradient-to-b from-slate-50 to-white"
+      className="relative w-full min-h-screen py-32 overflow-hidden bg-gradient-to-b from-slate-50 via-white to-emerald-50/30"
       style={{
-        background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.03) 0%, transparent 50%)`,
+        backgroundImage: `radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+                         radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%)`,
       }}
     >
       {/* Advanced Background Effects */}
-      <ParticleBackground />
-      <NeuralConnections activeIndex={activeIndex} cards={cards} />
+      <HolographicGrid />
+      <QuantumWave />
+      <NeuralSynapses activeIndex={activeIndex} cards={cards} />
       
-      {/* Animated Grid Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f46e510_1px,transparent_1px),linear-gradient(to_bottom,#4f46e510_1px,transparent_1px)] bg-[size:64px_64px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-white" />
-      </div>
-
-      {/* Floating Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-blue-400/10 blur-3xl animate-pulse delay-1000" />
+      {/* Floating Quantum Orbs */}
+      <motion.div 
+        className="absolute top-1/4 left-1/4 w-96 h-96 -translate-x-1/2 -translate-y-1/2"
+        animate={{
+          y: [0, -20, 0],
+          rotate: 360,
+        }}
+        transition={{
+          y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: 40, repeat: Infinity, ease: "linear" }
+        }}
+      >
+        <HolographicOrb color="#10B981" />
+      </motion.div>
+      
+      <motion.div 
+        className="absolute bottom-1/4 right-1/4 w-64 h-64 translate-x-1/2 translate-y-1/2"
+        animate={{
+          y: [0, 20, 0],
+          rotate: -360,
+        }}
+        transition={{
+          y: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: 50, repeat: Infinity, ease: "linear" }
+        }}
+      >
+        <HolographicOrb color="#3B82F6" />
+      </motion.div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Animated Header with DNA Helix */}
+        {/* Animated Header */}
         <motion.div 
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 80 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
           className="text-center mb-24 relative"
         >
-          <DNAHelix />
+          <AdvancedDNAHelix />
           
-          {/* Animated Badge */}
+          {/* Animated Quantum Badge */}
           <motion.div 
             initial={{ scale: 0, rotate: -180 }}
             whileInView={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-400/10 to-blue-400/10 border border-emerald-200 backdrop-blur-sm mb-8 shadow-sm"
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-purple-500/10 border border-white/30 backdrop-blur-2xl mb-12 shadow-2xl"
           >
             <motion.div 
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500"
-            />
-            <span className="text-sm font-semibold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent tracking-wider">
-              EXCELLENCE IN EDUCATION
+              animate={{ 
+                rotate: 360,
+                scale: [1, 1.2, 1],
+              }}
+              transition={{ 
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                scale: { duration: 2, repeat: Infinity }
+              }}
+              className="relative w-3 h-3"
+            >
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 blur-sm" />
+            </motion.div>
+            <span className="text-sm font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent tracking-wider">
+              QUANTUM EDUCATION SYSTEM
             </span>
+            <motion.div 
+              animate={{ 
+                rotate: -360,
+                scale: [1, 1.2, 1],
+              }}
+              transition={{ 
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                scale: { duration: 2, repeat: Infinity, delay: 1 }
+              }}
+              className="relative w-3 h-3"
+            >
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-sm" />
+            </motion.div>
           </motion.div>
           
-          {/* Main Title with Gradient Text */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 tracking-tighter">
-            <span className="bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Why
+          {/* Main Title with Advanced Gradient */}
+          <motion.h1 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-6xl md:text-8xl lg:text-9xl font-black mb-8 tracking-tighter relative"
+          >
+            <span className="relative">
+              <span className="absolute -inset-2 bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 blur-3xl opacity-30" />
+              <span className="relative bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Why
+              </span>
             </span>
-            <span className="text-slate-900 ml-4">Choose Us</span>
-          </h1>
+            <span className="text-slate-900 ml-4 relative">
+              <span className="absolute -inset-1 bg-white blur-xl opacity-30" />
+              <span className="relative">Choose Us</span>
+            </span>
+          </motion.h1>
           
           {/* Animated Subtitle */}
           <motion.p 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="max-w-3xl mx-auto text-xl text-slate-600 leading-relaxed"
+            transition={{ delay: 0.4 }}
+            className="max-w-3xl mx-auto text-2xl text-slate-700 leading-relaxed font-light"
           >
-            Discover what sets our educational approach apart. We combine proven teaching methods 
-            with innovative technology to create an exceptional learning environment where every 
-            child can thrive and reach their full potential.
+            Where <span className="font-semibold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">cutting-edge pedagogy</span> meets 
+            <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> revolutionary technology</span> to create 
+            the ultimate learning ecosystem for tomorrow's innovators.
           </motion.p>
         </motion.div>
 
-        {/* 3D Holographic Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+        {/* 3D Advanced Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
           {cards.map((card, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 60, rotateX: 45 }}
+              initial={{ opacity: 0, y: 100, rotateX: 30 }}
               whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
               transition={{ 
-                duration: 0.8, 
-                delay: index * 0.2,
+                duration: 1, 
+                delay: index * 0.3,
                 ease: [0.22, 1, 0.36, 1]
               }}
               viewport={{ once: true, margin: "-100px" }}
               onMouseEnter={() => setActiveIndex(index)}
               onMouseLeave={() => setActiveIndex(null)}
-              className="h-[550px]"
+              className="h-[600px] relative"
             >
-              <HolographicCard glowColors={card.glowColors} rotationIntensity={20}>
-                <div className="flex flex-col h-full p-1">
-                  {/* Floating Particles in Card */}
+              {/* Card Background Glow */}
+              <motion.div 
+                className="absolute -inset-4 rounded-5xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                style={{
+                  background: `radial-gradient(circle at center, ${card.color}20, transparent 70%)`,
+                }}
+              />
+              
+              <AdvancedCard glowColors={card.glowColors} hoverIntensity={25} index={index}>
+                <div className="flex flex-col h-full p-2">
+                  {/* Quantum Particles in Card */}
                   <div className="absolute inset-0 overflow-hidden rounded-4xl">
                     {card.particles.map((particle, i) => (
-                      <motion.span
+                      <motion.div
                         key={i}
-                        className="absolute text-2xl opacity-10"
-                        initial={{ 
-                          x: Math.random() * 100 - 50,
-                          y: Math.random() * 100 - 50
+                        className="absolute text-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-700"
+                        style={{
+                          left: `${Math.random() * 100}%`,
+                          top: `${Math.random() * 100}%`,
                         }}
-                        animate={{ 
-                          x: Math.random() * 100 - 50,
-                          y: Math.random() * 100 - 50,
-                          rotate: 360
+                        animate={{
+                          x: [0, Math.random() * 100 - 50, 0],
+                          y: [0, Math.random() * 100 - 50, 0],
+                          rotate: 360,
+                          scale: [0, 1, 0],
                         }}
                         transition={{
-                          duration: Math.random() * 10 + 10,
+                          duration: Math.random() * 8 + 6,
                           repeat: Infinity,
+                          delay: Math.random() * 3,
                           ease: "linear"
                         }}
                       >
                         {particle}
-                      </motion.span>
+                      </motion.div>
                     ))}
                   </div>
 
-                  {/* Image with Parallax Effect */}
-                  <div className="relative h-64 overflow-hidden rounded-3xl">
+                  {/* Image with Parallax and Glow */}
+                  <div className="relative h-72 overflow-hidden rounded-3xl group/image">
                     <motion.div 
                       className="absolute inset-0 z-10"
                       style={{
-                        background: `linear-gradient(135deg, ${card.gradient})`
+                        background: `linear-gradient(135deg, ${card.gradient})`,
                       }}
                     />
                     <motion.img 
@@ -489,103 +753,144 @@ export default function WhyUsSection() {
                       alt={card.title}
                       className="absolute inset-0 w-full h-full object-cover"
                       animate={{
-                        scale: activeIndex === index ? 1.2 : 1.1,
+                        scale: activeIndex === index ? 1.3 : 1.1,
                       }}
-                      transition={{ duration: 1.5 }}
+                      transition={{ duration: 2, ease: "easeInOut" }}
                     />
                     
                     {/* Animated Badge */}
                     <motion.div 
                       className="absolute top-6 right-6 z-20"
                       animate={{
-                        y: activeIndex === index ? [0, -5, 0] : 0,
+                        y: [0, -8, 0],
                       }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                      transition={{ duration: 3, repeat: Infinity }}
                     >
-                      <span className="px-4 py-2 text-xs font-bold bg-white/80 backdrop-blur-md text-slate-800 rounded-full border border-slate-200 shadow-lg">
+                      <span className="px-5 py-2.5 text-sm font-bold bg-white/90 backdrop-blur-xl text-slate-900 rounded-full border border-white/40 shadow-2xl">
                         {card.badge}
                       </span>
                     </motion.div>
                     
-                    {/* Icon Floating Animation */}
+                    {/* Quantum Icon */}
                     <motion.div 
-                      className="absolute bottom-6 left-6 z-20 text-4xl"
+                      className="absolute bottom-6 left-6 z-20 text-5xl"
                       animate={{
-                        y: [0, -10, 0],
-                        rotate: activeIndex === index ? 360 : 0,
+                        y: [0, -15, 0],
+                        rotate: activeIndex === index ? [0, 360] : 0,
                       }}
                       transition={{ 
-                        y: { duration: 3, repeat: Infinity },
-                        rotate: { duration: 2 }
+                        y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                        rotate: { duration: 3 }
                       }}
                     >
                       {card.icon}
                     </motion.div>
+                    
+                    {/* Image Overlay Glow */}
+                    <motion.div 
+                      className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-500"
+                    />
                   </div>
 
                   {/* Content Area */}
                   <div className="flex-1 p-8 flex flex-col">
                     <div className="flex-1">
                       <motion.h3 
-                        className="text-3xl font-bold text-slate-900 mb-4"
+                        className="text-4xl font-bold text-slate-900 mb-6"
                         animate={{
                           background: activeIndex === index 
                             ? `linear-gradient(45deg, ${card.glowColors.join(', ')})`
                             : "transparent",
-                          backgroundClip: activeIndex === index ? "text" : "",
-                          WebkitBackgroundClip: activeIndex === index ? "text" : "",
-                          WebkitTextFillColor: activeIndex === index ? "transparent" : "",
+                          backgroundClip: "text",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
                         }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.7 }}
                       >
                         {card.title}
                       </motion.h3>
                       
-                      <p className="text-slate-600 leading-relaxed mb-6">
+                      <motion.p 
+                        className="text-slate-700 leading-relaxed text-lg mb-8"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
                         {card.description}
-                      </p>
+                      </motion.p>
                     </div>
 
-                    {/* Interactive Stats Bar */}
-                    <div className="pt-6 border-t border-slate-200">
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm text-slate-500">Parent Satisfaction</span>
-                        <span className={`text-lg font-bold ${card.accent}`}>{card.stats}</span>
+                    {/* Interactive Stats */}
+                    <div className="pt-8 border-t border-white/30">
+                      <div className="flex items-center justify-between mb-6">
+                        <span className="text-sm text-slate-600 font-medium">Success Metric</span>
+                        <motion.span 
+                          className={`text-2xl font-black ${card.accent}`}
+                          animate={{
+                            scale: activeIndex === index ? [1, 1.1, 1] : 1,
+                          }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          {card.stats}
+                        </motion.span>
                       </div>
-                      <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                      
+                      {/* Animated Progress Bar */}
+                      <div className="h-2 bg-white/50 rounded-full overflow-hidden mb-8">
                         <motion.div 
                           className={`h-full rounded-full bg-gradient-to-r ${card.gradient}`}
                           initial={{ width: "0%" }}
-                          whileInView={{ width: "85%" }}
-                          transition={{ duration: 1, delay: index * 0.2 }}
+                          whileInView={{ width: "92%" }}
+                          transition={{ duration: 1.5, delay: index * 0.2, ease: "easeOut" }}
                         />
                       </div>
                       
-                      {/* Interactive CTA */}
+                      {/* Quantum CTA */}
                       <motion.div 
-                        className="mt-6 flex items-center justify-between group/cta cursor-pointer"
-                        whileHover={{ x: 5 }}
+                        className="flex items-center justify-between group/cta cursor-pointer"
+                        whileHover={{ x: 10 }}
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4">
                           <motion.div 
-                            className="w-8 h-8 rounded-full bg-gradient-to-r from-emerald-400/20 to-blue-400/20 flex items-center justify-center border border-slate-200"
-                            whileHover={{ scale: 1.1 }}
+                            className="relative w-10 h-10 rounded-full bg-gradient-to-r from-white to-white/80 flex items-center justify-center border border-white/30 shadow-lg"
+                            whileHover={{ scale: 1.15 }}
+                            animate={{
+                              boxShadow: [
+                                "0 0 20px rgba(16, 185, 129, 0.3)",
+                                "0 0 40px rgba(16, 185, 129, 0.6)",
+                                "0 0 20px rgba(16, 185, 129, 0.3)",
+                              ],
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
                           >
-                            <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
+                            <motion.svg 
+                              className="w-5 h-5 text-emerald-600" 
+                              fill="none" 
+                              stroke="currentColor" 
+                              viewBox="0 0 24 24"
+                              animate={{ x: [0, 5, 0] }}
+                              transition={{ duration: 1.5, repeat: Infinity }}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </motion.svg>
                           </motion.div>
-                          <span className="text-slate-800 font-medium group-hover/cta:text-emerald-600 transition-colors">
-                            Learn More About Our Approach
+                          <span className="text-slate-900 font-semibold text-lg group-hover/cta:text-emerald-700 transition-colors duration-300">
+                            Explore Quantum Learning
                           </span>
                         </div>
                         
-                        {/* Animated Arrow */}
+                        {/* Quantum Arrow */}
                         <motion.div
-                          animate={{ x: [0, 5, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
+                          animate={{ 
+                            x: [0, 8, 0],
+                            rotate: [0, 360],
+                          }}
+                          transition={{ 
+                            x: { duration: 2, repeat: Infinity },
+                            rotate: { duration: 4, repeat: Infinity, ease: "linear" }
+                          }}
                         >
-                          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                           </svg>
                         </motion.div>
@@ -593,73 +898,153 @@ export default function WhyUsSection() {
                     </div>
                   </div>
                 </div>
-              </HolographicCard>
+              </AdvancedCard>
             </motion.div>
           ))}
         </div>
 
-        {/* Floating Stats Bar */}
+        {/* Quantum Stats Dashboard */}
         <motion.div 
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-20 p-8 rounded-3xl bg-gradient-to-r from-emerald-400/10 via-blue-400/10 to-purple-400/10 border border-slate-200/60 backdrop-blur-sm shadow-lg"
+          transition={{ delay: 0.8 }}
+          className="mt-32 p-12 rounded-4xl bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-2xl border border-white/30 shadow-2xl"
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
-              { value: "25+", label: "Years of Excellence", icon: "🏆" },
-              { value: "98%", label: "Parent Satisfaction", icon: "😊" },
-              { value: "1:15", label: "Student-Teacher Ratio", icon: "👨‍🏫" },
-              { value: "100%", label: "University Placement", icon: "🎓" }
+              { value: "25+", label: "Years of Excellence", icon: "🏆", color: "from-emerald-500 to-emerald-600" },
+              { value: "98%", label: "Parent Satisfaction", icon: "😊", color: "from-blue-500 to-cyan-500" },
+              { value: "1:15", label: "Student-Teacher Ratio", icon: "👨‍🏫", color: "from-purple-500 to-pink-500" },
+              { value: "100%", label: "University Placement", icon: "🎓", color: "from-orange-500 to-red-500" }
             ].map((stat, index) => (
               <motion.div 
                 key={index}
-                className="text-center"
-                whileHover={{ scale: 1.05 }}
+                className="text-center group"
+                whileHover={{ scale: 1.05, y: -5 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 + 0.3 }}
               >
-                <div className="text-3xl mb-2 opacity-80">{stat.icon}</div>
-                <div className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-                  {stat.value}
+                <motion.div 
+                  className="text-5xl mb-4 inline-block"
+                  animate={{ 
+                    rotate: [0, 10, -10, 0],
+                    y: [0, -5, 0],
+                  }}
+                  transition={{ 
+                    rotate: { duration: 5, repeat: Infinity },
+                    y: { duration: 3, repeat: Infinity }
+                  }}
+                >
+                  {stat.icon}
+                </motion.div>
+                <div className="relative">
+                  <motion.div 
+                    className="text-6xl font-black mb-2 bg-gradient-to-r bg-clip-text text-transparent"
+                    animate={{
+                      backgroundImage: `linear-gradient(to right, ${stat.color})`,
+                    }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
+                    {stat.value}
+                  </motion.div>
+                  <div className="text-slate-700 text-lg font-medium">{stat.label}</div>
+                  
+                  {/* Animated underline */}
+                  <motion.div 
+                    className="h-1 bg-gradient-to-r from-transparent via-current to-transparent opacity-0 group-hover:opacity-100 mt-2"
+                    style={{ backgroundImage: `linear-gradient(to right, transparent, ${stat.color.split(' ')[1]}, transparent)` }}
+                    initial={{ width: "0%" }}
+                    whileHover={{ width: "100%" }}
+                    transition={{ duration: 0.3 }}
+                  />
                 </div>
-                <div className="text-slate-600 text-sm mt-2">{stat.label}</div>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* Additional Content Section */}
+        {/* Quantum Call to Action */}
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="mt-20 text-center"
+          className="mt-32 text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">
-            Our Commitment to Excellence
-          </h2>
-          <div className="max-w-3xl mx-auto space-y-6 text-lg text-slate-600 leading-relaxed">
-            <p>
-              At our school, we believe that education should be a transformative experience 
-              that prepares students not just for exams, but for life. Our dedicated faculty, 
-              state-of-the-art facilities, and forward-thinking curriculum create an environment 
-              where curiosity is encouraged, creativity is celebrated, and character is built.
-            </p>
-            <p>
-              We maintain a balanced approach that combines academic rigor with emotional 
-              intelligence development, ensuring our students become well-rounded individuals 
-              ready to make positive contributions to society.
-            </p>
-          </div>
+          <motion.h2 
+            className="text-5xl md:text-6xl font-black mb-12 text-slate-900"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            Ready for the{" "}
+            <span className="relative">
+              <span className="absolute -inset-2 bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 blur-3xl opacity-40" />
+              <span className="relative bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Quantum Leap
+              </span>
+            </span>
+            ?
+          </motion.h2>
           
-          {/* Call to Action Button */}
+          <motion.p 
+            className="max-w-3xl mx-auto text-2xl text-slate-700 leading-relaxed mb-16 font-light"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            Join our community of innovators, thinkers, and future leaders. Experience education 
+            reimagined for the quantum age.
+          </motion.p>
+          
+          {/* Quantum Button */}
           <motion.div 
-            className="mt-12"
+            className="relative inline-block"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <button className="px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:from-emerald-600 hover:to-blue-600">
-              Schedule a Campus Tour
-            </button>
+            <motion.button
+              className="relative px-16 py-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 text-white font-bold text-2xl shadow-2xl overflow-hidden group"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                backgroundPosition: {
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "linear"
+                }
+              }}
+              style={{
+                backgroundSize: "200% 200%",
+              }}
+            >
+              {/* Button Glow */}
+              <motion.div 
+                className="absolute -inset-1 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              />
+              
+              {/* Button Text */}
+              <span className="relative z-10 flex items-center gap-4">
+                Schedule Quantum Tour
+                <motion.svg 
+                  className="w-6 h-6" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  animate={{ 
+                    x: [0, 5, 0],
+                    rotate: [0, 360],
+                  }}
+                  transition={{ 
+                    x: { duration: 1.5, repeat: Infinity },
+                    rotate: { duration: 3, repeat: Infinity, ease: "linear" }
+                  }}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </motion.svg>
+              </span>
+            </motion.button>
           </motion.div>
         </motion.div>
       </div>
